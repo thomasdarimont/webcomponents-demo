@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Custom Component V4</title>
+  </head>
+  <body>
+    <!-- Note that custom elements needs at least one '-' in element name! -->
+    <custom-alert type="warn">
+      <h4>Achtung</h4>
+      <p>Etwas schlimmes ist passiert!</p>
+    </custom-alert>
+
+    <custom-alert type="success">
+      <h4>Gl&uuml;ckwunsch</h4>
+      <p>Alles im gr&uuml;nen Bereich!</p>
+    </custom-alert>
+
+    <!-- note that since the class 'warn' is local to custom-alert, the class is not visible for this element -->
+    <div class="warn">
+      Should not have a border
+    </div>
+
+    <script>
+      class CustomAlert extends HTMLElement {
+        constructor() {
+          super();
+          // use shadow DOM to attach namespaced DOM structure but expose shadowRoot
+          this.attachShadow({ mode: "open" });
+
+          // use shadow DOM to attach namespaced DOM structure but DON'T expose shadowRoot
+          // this.shadow = this.attachShadow({mode: 'closed'});
+        }
+
+        connectedCallback() {
+          console.log("connected %s", this);
+
+          const style = document.createElement("style");
+          style.textContent = `
+            .warn {
+              border: 1px solid red;
+              background-color: lightpink;
+            }
+            .success {
+              border: 1px solid green;
+              background-color: chartreuse;
+            }`;
+
+          const button = document.createElement("button");
+          button.innerHTML = "&times;";
+          button.addEventListener("click", () => {
+            this.style.display = "none";
+          });
+
+          const wrapper = document.createElement('div');
+          wrapper.classList.add(this.getAttribute('type'));
+
+          wrapper.appendChild(style);
+          wrapper.appendChild(button);
+
+          this.childNodes.forEach(node => {
+            wrapper.appendChild(node.cloneNode(true));
+          })
+
+          this.shadowRoot.appendChild(wrapper);
+        }
+      }
+
+      customElements.define("custom-alert", CustomAlert);
+    </script>
+
+    <script defer>
+
+      console.log("document.querySelectorAll('button') should yield no output");
+      console.log(document.querySelectorAll('button'));
+
+      // note that shadowRoot is visible, since used this.attachShadow({ mode: "open" });
+      console.log("document.querySelector('custom-alert').shadowRoot.querySelector('button') should yield the button");
+      console.log(document.querySelector('custom-alert').shadowRoot.querySelector('button'));
+    </script>
+  </body>
+</html>

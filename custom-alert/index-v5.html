@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Custom Component V5</title>
+  </head>
+  <body>
+    <!-- Note that the template element is not shown on the page! -->
+    <template id="alert">
+      <style>
+        .warn {
+          border: 1px solid red;
+          display: block;
+        }
+        .success {
+          border: 1px solid green;
+          display: block;
+        }
+      </style>
+      <!-- Add slots to allow parameterization of the component -->
+      <slot name="title"><h1>Achtung</h1></slot>
+      <slot name="text"><p>Achtung, Achtung!</p></slot>
+    </template>
+
+    <!-- Note that custom elements needs at least one '-' in element name! -->
+    <custom-alert type="warn">
+      <!-- Note that we use the provided slots to parameterize the example -->
+      <h4 slot="title">Achtung</h4>
+      <p slot="text">Etwas schlimmes ist passiert!</p>
+    </custom-alert>
+
+    <custom-alert type="success">
+      <h4 slot="title">Gl&uuml;ckwunsch</h4>
+      <p slot="text">Alles im gr&uuml;nen Bereich!</p>
+    </custom-alert>
+
+    <script>
+      class CustomAlert extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: "open" });
+        }
+
+        connectedCallback() {
+          const button = document.createElement("button");
+          button.innerHTML = "&times;";
+          button.addEventListener("click", () => {
+            this.style.display = "none";
+          });
+
+          const template = document.getElementById("alert").content;
+
+          const wrapper = document.createElement("div");
+          wrapper.classList.add(this.getAttribute("type"));
+          wrapper.appendChild(button);
+          wrapper.appendChild(template.cloneNode(true));
+
+          this.shadowRoot.appendChild(wrapper);
+        }
+      }
+
+      customElements.define("custom-alert", CustomAlert);
+    </script>
+  </body>
+</html>

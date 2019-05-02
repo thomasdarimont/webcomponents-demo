@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Custom Component V2</title>
+    <style>
+      .warn {
+        border: 1px solid red;
+        background-color: lightpink;
+      }
+      .success {
+        border: 1px solid green;
+        background-color: chartreuse;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Note that custom elements needs at least one '-' in element name! -->
+    <custom-alert type="warn">
+      <h4>Achtung</h4>
+      <p>Etwas schlimmes ist passiert!</p>
+    </custom-alert>
+
+    <custom-alert type="success">
+      <h4>Gl&uuml;ckwunsch</h4>
+      <p>Alles im gr&uuml;nen Bereich!</p>
+    </custom-alert>
+
+    <script>
+      //  Autonomous Custom Element.
+      class CustomAlert extends HTMLElement {
+
+        // added to DOM
+        connectedCallback() {
+          console.log("connected %s", this);
+
+          const button = document.createElement("button");
+          button.innerHTML = "&times;";
+          button.addEventListener("click", () => {
+            this.style.display = "none";
+          });
+
+          this.appendChild(button);
+          this.classList.add(this.getAttribute("type"));
+        }
+
+        // Called when removed from DOM
+        // disconnectedCallback() {}
+
+        // Called when moved within DOM hierarchy
+        // adoptedCallback(){}
+
+        // Called when an attribute value changed
+        // attributeChangedCallback(){}
+      }
+
+      // Add element to CustomElementRegistry
+      customElements.define("custom-alert", CustomAlert);
+    </script>
+  </body>
+</html>

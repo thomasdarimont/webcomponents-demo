@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Custom Component V3</title>
+    <style>
+        .warn {
+          border: 1px solid red;
+          background-color: lightpink;
+        }
+        .success {
+          border: 1px solid green;
+          background-color: chartreuse;
+        }
+      </style>
+  </head>
+  <body>
+    <!-- Here we extend an existing HTML Element ul -->
+    <ul is="custom-alert" type="warn">
+      <h4>Achtung</h4>
+      <p>Etwas schlimmes ist passiert!</p>
+    </ul>
+
+    <ul is="custom-alert" type="success">
+      <h4>Gl&uuml;ckwunsch</h4>
+      <p>Alles im gr&uuml;nen Bereich!</p>
+    </ul>
+
+    <script>
+      // Note that we also use the HTMLUListElement base class instead of HTMLElement
+      class CustomAlert extends HTMLUListElement {
+        connectedCallback() {
+          console.log("connected %s", this);
+
+          const button = document.createElement("button");
+          button.innerHTML = "&times;";
+          button.addEventListener("click", () => {
+            this.style.display = "none";
+          });
+
+          this.appendChild(button);
+          this.classList.add(this.getAttribute("type"));
+        }
+      }
+
+      // We need to specify, that we extend the <ul> element
+      customElements.define("custom-alert", CustomAlert, { extends: 'ul' });
+    </script>
+  </body>
+</html>

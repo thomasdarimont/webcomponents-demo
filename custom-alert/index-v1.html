@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Custom Component V1</title>
+
+    <style>
+      .alert-warn {
+        border: 1px solid red;
+        background-color: lightpink;
+      }
+      .alert-success {
+        border: 1px solid green;
+        background-color: chartreuse;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="alert alert-warn">
+      <h4>Achtung</h4>
+      <p>Etwas schlimmes ist passiert!</p>
+    </div>
+
+    <div class="alert alert-success">
+      <h4>Gl&uuml;ckwunsch</h4>
+      <p>Alles im gr&uuml;nen Bereich!</p>
+    </div>
+
+    <script>
+      // add the button via javascript since it only works if javascript is enabled
+      // --> Progressive Enhancement
+      document.querySelectorAll(".alert").forEach(node => {
+        const button = document.createElement("button");
+        button.innerHTML = "&times;";
+        button.addEventListener("click", () => {
+          node.style.display = "none";
+        });
+
+        node.insertBefore(button, node.firstChild);
+      });
+    </script>
+  </body>
+</html>
